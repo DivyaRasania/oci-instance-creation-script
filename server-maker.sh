@@ -12,14 +12,14 @@ AVAILABILITY_DOMAINS=(
 )
 
 curl -s -X POST -H "Content-Type: application/json" \
--d "{\"content\": \"Starting to log from: $DEVICE_NAME on $(date '+%A, %b %d - %H:%M:%S')\"}" \
+-d "{\"content\": \"Starting to log from: $DEVICE_NAME on $(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')\"}" \
 "$WEBHOOK_URL"
 
 attempt=0
 
 while true; do
   attempt=$((attempt + 1))
-  echo "[$(date)] Attempt #$attempt"
+  echo "[$(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')] Attempt #$attempt"
 
   for AD in "${AVAILABILITY_DOMAINS[@]}"; do
     echo "Trying $AD..."
