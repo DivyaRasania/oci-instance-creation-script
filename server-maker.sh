@@ -12,7 +12,7 @@ AVAILABILITY_DOMAINS=(
 )
 
 curl -s -X POST -H "Content-Type: application/json" \
--d "{\"content\": \"Starting to log from: $DEVICE_NAME\"}" \
+-d "{\"content\": \"Starting to log from: $DEVICE_NAME on $(date '+%A, %b %d - %H:%M:%S')\"}" \
 "$WEBHOOK_URL"
 
 attempt=0
