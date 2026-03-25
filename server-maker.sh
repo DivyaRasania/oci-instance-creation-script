@@ -1,6 +1,6 @@
 #!/bin/bash
 
-source .env # COMPARTMENT_ID, SUBNET_ID and WEBHOOK_URL sourced from .env
+source .env # COMPARTMENT_ID, SUBNET_ID, WEBHOOK_URL, and DEVICE_NAME sourced from .env
 IMAGE_ID="ocid1.image.oc1.us-chicago-1.aaaaaaaaoo4nzxuu6w5aty4ap6jjnfxebwwxhlfxj5gkzmtgtnsw24eksmia"
 SSH_KEY_FILE="$HOME/.ssh/oci-server-backup.pub"
 DISPLAY_NAME="server"
@@ -12,14 +12,18 @@ AVAILABILITY_DOMAINS=(
 )
 
 curl -s -X POST -H "Content-Type: application/json" \
--d "{\"content\": \"Starting to log from: $DEVICE_NAME on $(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')\"}" \
-"$WEBHOOK_URL"
+  -d "{\"content\": \"Starting to log from: $DEVICE_NAME on $(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')\"}" \
+  "$WEBHOOK_URL"
 
 attempt=0
 
 while true; do
   attempt=$((attempt + 1))
   echo "[$(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')] Attempt #$attempt"
+
+  curl -s -X POST -H "Content-Type: application/json" \
+    -d "{\"content\": \"Attempt #$attempt\"}" \
+    "$WEBHOOK_URL"
 
   for AD in "${AVAILABILITY_DOMAINS[@]}"; do
     echo "Trying $AD..."
@@ -42,17 +46,17 @@ while true; do
 
     if echo "$RESULT" | grep -q '"lifecycle-state"'; then
       curl -s -X POST -H "Content-Type: application/json" \
-      -d "{\"content\": \"<@1005536927388291133> Attempt #$attempt: ✅ Success — $STATUS $CODE: $MESSAGE\"}" \
-      "$WEBHOOK_URL"
+        -d "{\"content\": \"<@1005536927388291133> ✅ Success creating in $AD — $STATUS $CODE: $MESSAGE\"}" \
+        "$WEBHOOK_URL"
 
-      echo -e "✅ SUCCESS:\n$RESULT" > success.txt
+      echo -e "✅ SUCCESS:\n$RESULT" >> success.txt
       exit 0
     else
       curl -s -X POST -H "Content-Type: application/json" \
-      -d "{\"content\": \"Attempt #$attempt: ❌ Failed — $STATUS $CODE: $MESSAGE\"}" \
-      "$WEBHOOK_URL"
+        -d "{\"content\": \"❌ Failed creating in $AD — $STATUS $CODE: $MESSAGE\"}" \
+        "$WEBHOOK_URL"
 
-      echo -e "❌ FAILED:\n$RESULT" > error.txt
+      echo -e "❌ FAILED:\n$RESULT" >> error.txt
     fi
   done
 
