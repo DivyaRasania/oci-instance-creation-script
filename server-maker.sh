@@ -21,6 +21,7 @@ while true; do
   attempt=$((attempt + 1))
   echo "[$(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')] Attempt #$attempt"
 
+  echo "[$(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')] Attempt #$attempt" >> error.txt
   curl -s -X POST -H "Content-Type: application/json" \
     -d "{\"content\": \"Attempt #$attempt\"}" \
     "$WEBHOOK_URL"
@@ -45,18 +46,20 @@ while true; do
     MESSAGE=$(echo "$RESULT" | grep -oP '"message":\s*"\K[^"]+')
 
     if echo "$RESULT" | grep -q '"lifecycle-state"'; then
+      echo "[$(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')] Attempt #$attempt" >> success.txt
+
       curl -s -X POST -H "Content-Type: application/json" \
-        -d "{\"content\": \"<@1005536927388291133> ✅ Success creating in $AD — $STATUS $CODE: $MESSAGE\"}" \
+        -d "{\"content\": \"<@1005536927388291133> ✅ Success $AD — $STATUS $CODE: $MESSAGE\"}" \
         "$WEBHOOK_URL"
 
-      echo -e "✅ SUCCESS:\n$RESULT" >> success.txt
+      echo -e "✅ Success $AD:\n$RESULT" >> success.txt
       exit 0
     else
       curl -s -X POST -H "Content-Type: application/json" \
-        -d "{\"content\": \"❌ Failed creating in $AD — $STATUS $CODE: $MESSAGE\"}" \
+        -d "{\"content\": \"❌ Failed $AD — $STATUS $CODE: $MESSAGE\"}" \
         "$WEBHOOK_URL"
 
-      echo -e "❌ FAILED:\n$RESULT" >> error.txt
+      echo -e "❌ Failed $AD:\n$RESULT\n" >> error.txt
     fi
   done
 
