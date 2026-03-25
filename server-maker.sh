@@ -11,6 +11,10 @@ AVAILABILITY_DOMAINS=(
   "ibxy:US-CHICAGO-1-AD-3"
 )
 
+curl -s -X POST -H "Content-Type: application/json" \
+-d "{\"content\": \"Starting to log from: $DEVICE_NAME\"}" \
+"$WEBHOOK_URL"
+
 attempt=0
 
 while true; do
