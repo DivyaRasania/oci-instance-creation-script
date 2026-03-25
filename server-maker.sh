@@ -38,7 +38,7 @@ while true; do
 
     if echo "$RESULT" | grep -q '"lifecycle-state"'; then
       curl -s -X POST -H "Content-Type: application/json" \
-      -d "{\"content\": \"✅ Success on $AD — $STATUS $CODE: $MESSAGE\"}" \
+      -d "{\"content\": \"<@1005536927388291133> ✅ Success on $AD — $STATUS $CODE: $MESSAGE\"}" \
       "$WEBHOOK_URL"
 
       echo -e "✅ SUCCESS:\n$RESULT"
