@@ -1,2 +1,4 @@
 .env
 oci-server-backup-keys.zip
+success.txt
+error.txt
