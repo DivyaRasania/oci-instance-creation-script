@@ -33,7 +33,7 @@ while true; do
       --availability-domain "$AD" \
       --compartment-id "$COMPARTMENT_ID" \
       --shape "VM.Standard.A1.Flex" \
-      --shape-config '{"ocpus": 4, "memoryInGBs": 24}' \
+      --shape-config '{"ocpus": 3, "memoryInGBs": 20}' \
       --subnet-id "$SUBNET_ID" \
       --image-id "$IMAGE_ID" \
       --display-name "$DISPLAY_NAME" \
