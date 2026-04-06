@@ -5,6 +5,8 @@ IMAGE_ID="ocid1.image.oc1.us-chicago-1.aaaaaaaaoo4nzxuu6w5aty4ap6jjnfxebwwxhlfxj
 SSH_KEY_FILE="$HOME/.ssh/oci-server-backup.pub"
 DISPLAY_NAME="server"
 RETRY_DELAY=60
+OCPUS=2 # max 4
+MEMORY=10 # max 24
 AVAILABILITY_DOMAINS=(
   "ibxy:US-CHICAGO-1-AD-1"
   "ibxy:US-CHICAGO-1-AD-2"
@@ -12,7 +14,7 @@ AVAILABILITY_DOMAINS=(
 )
 
 curl -s -X POST -H "Content-Type: application/json" \
-  -d "{\"content\": \"Starting to log from: $DEVICE_NAME on $(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')\"}" \
+  -d "{\"content\": \"Starting to log from: $DEVICE_NAME to get instance with $OCPUS ocpus and $MEMORY RAM on $(TZ='America/New_York' date '+%A, %b %d - %H:%M:%S')\"}" \
   "$WEBHOOK_URL"
 
 attempt=0
@@ -33,7 +35,7 @@ while true; do
       --availability-domain "$AD" \
       --compartment-id "$COMPARTMENT_ID" \
       --shape "VM.Standard.A1.Flex" \
-      --shape-config '{"ocpus": 3, "memoryInGBs": 20}' \
+      --shape-config '{"ocpus": $OCPUS, "memoryInGBs": $MEMORY}' \
       --subnet-id "$SUBNET_ID" \
       --image-id "$IMAGE_ID" \
       --display-name "$DISPLAY_NAME" \
