@@ -1,7 +1,7 @@
 #!/bin/bash
 
 source .env # COMPARTMENT_ID, SUBNET_ID, WEBHOOK_URL, and DEVICE_NAME sourced from .env
-IMAGE_ID="ocid1.image.oc1.us-chicago-1.aaaaaaaa3yn6ge4bv3vl7hxkh2uof5dw2wz5potswwekneudwrolkjpksnwq" # Canonical-Ubuntu-24.04-2026.02.28-0
+IMAGE_ID="ocid1.image.oc1.us-chicago-1.aaaaaaaaoo4nzxuu6w5aty4ap6jjnfxebwwxhlfxj5gkzmtgtnsw24eksmia" # Canonical-Ubuntu-24.04-aarch64-2026.02.28-0
 SSH_KEY_FILE="$HOME/.ssh/oci-server-backup.pub"
 DISPLAY_NAME="server"
 RETRY_DELAY=60
@@ -35,7 +35,7 @@ while true; do
       --availability-domain "$AD" \
       --compartment-id "$COMPARTMENT_ID" \
       --shape "VM.Standard.A1.Flex" \
-      --shape-config '{"ocpus": $OCPUS, "memoryInGBs": $MEMORY}' \
+      --shape-config "{\"ocpus\": $OCPUS, \"memoryInGBs\": $MEMORY}" \
       --subnet-id "$SUBNET_ID" \
       --image-id "$IMAGE_ID" \
       --display-name "$DISPLAY_NAME" \
